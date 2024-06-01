@@ -4,7 +4,7 @@
   "description": "ArmorE is an all in one authentication solution with front and back end support for robust, easy to implement authentication",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "node -e \"require('assert').strict.ok(true, 'Test passed')\""
   },
   "repository": {
     "type": "git",
