@@ -1,0 +1,24 @@
+{
+  "name": "armore-node",
+  "version": "0.1.1",
+  "description": "ArmorE is an all in one authentication solution with front and back end support for robust, easy to implement authentication",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oslabs-beta/ArmorE-node.git"
+  },
+  "keywords": [
+    "ArmorE",
+    "Auth",
+    "Authentication"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oslabs-beta/ArmorE-node/issues"
+  },
+  "homepage": "https://github.com/oslabs-beta/ArmorE-node#readme"
+}
