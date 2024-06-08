@@ -2,9 +2,11 @@
   "name": "armore-node",
   "version": "0.1.3",
   "description": "ArmorE is an all in one authentication solution with front and back end support for robust, easy to implement authentication",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "node -e \"require('assert').strict.ok(true, 'Test passed')\""
+    "test": "node -e \"require('assert').strict.ok(true, 'Test passed')\"",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/oslabs-beta/ArmorE-node/issues"
   },
-  "homepage": "https://github.com/oslabs-beta/ArmorE-node#readme"
+  "homepage": "https://github.com/oslabs-beta/ArmorE-node#readme",
+  "dependencies": {
+    "typescript": "^5.4.5"
+  }
 }
