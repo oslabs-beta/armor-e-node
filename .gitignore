@@ -113,6 +113,9 @@ dist
 # FuseBox cache
 .fusebox/
 
+# ToDoFiles
+todo.txt
+
 # DynamoDB Local files
 .dynamodb/
 
