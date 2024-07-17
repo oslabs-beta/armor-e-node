@@ -3,7 +3,7 @@ import jws, { Jwt, Secret } from 'jsonwebtoken';
 
 const createSessionToken = (req: Request, res: Response, next: NextFunction) => {
   // create a session token for the user
-  const secret: Secret = localStorage.getItem('secret') ?? '';
+  const secret: Secret = ?? '';
   const token: string = jws.sign({ id: req.body.user.id }, secret);
   res.locals.token = token;
   res.cookie('jwt', token);
