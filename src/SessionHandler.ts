@@ -3,7 +3,7 @@ import Options from './options';
 import jwt from 'jsonwebtoken';
 
 
-class SessionHandler {
+class SessionHandler { 
   private options: Options;
 
   constructor() {
