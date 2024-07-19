@@ -43,7 +43,20 @@ describe("Session handler functions", () => {
 
     it('should provide a token once a user is verified', () => {
 
+        const secret = process.env.SECRET_KEY || sessionHandler['options'].jwtSecret;
+
         const username = 'elizabeth';
         const password = 'password';
+
+        const user = { username, role: 'user' };
+
+        // const verifyUserSpy = jest.spyOn(sessionHandler, 'verifyUser');
+
+        const token = jwt.sign({ username: user.username, role: user.role }, secret);
+        
+
+        const result = sessionHandler.verifyUser(username, password);
+
+        expect(result).toBe(token);
     })
 })
