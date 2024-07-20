@@ -42,8 +42,19 @@ describe("Session handler functions", () => {
         expect(sessionHandler['options'].verify('hi', 'mom')).toBe('it works!');
     });
 
-    it('should provide a token once a user is verified', () => {
+});
 
+describe('verifyUser function', () => {
+    let sessionHandler : SessionHandler;
+    const username = 'elizabeth';
+    const password = 'password';
+    
+    beforeEach(() => {
+        sessionHandler = new SessionHandler
+    });
+    
+    it('should provide a token once a user is verified', () => {
+    
         sessionHandler.setOptions({
             verify: () => 'its working',
             jwtSecret: 'Lemmiwinks'
@@ -51,19 +62,17 @@ describe("Session handler functions", () => {
         
         const secret = sessionHandler['options'].jwtSecret;
         console.log({secret})
-
-        const username = 'elizabeth';
-        const password = 'password';
-
+    
+    
         const user = { username, role: 'user' };
-
+    
         const result = sessionHandler.verifyUser(username, password);
-
+    
         const checkToken = jwt.verify(result!, secret)
-
+    
         expect(checkToken).not.toBe(undefined);
     });
-
+    
     it('should return false if the credentials are invalid, as determined by the verify funciton', () => {
         sessionHandler.setOptions({
             verify: () => null,
@@ -72,17 +81,14 @@ describe("Session handler functions", () => {
         
         const secret = sessionHandler['options'].jwtSecret;
         console.log({secret})
-
-        const username = 'elizabeth';
-        const password = 'password';
-
+    
         const user = { username, role: 'user' };
-
+    
         const result = sessionHandler.verifyUser('bad', 'eeeevil');
-
+    
         expect(result).toBe(undefined);
     });
-});
+})
 
 describe("verifyToken function", () => {
     let sessionHandler : SessionHandler
