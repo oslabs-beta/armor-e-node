@@ -39,24 +39,72 @@ describe("Session handler functions", () => {
         expect(sessionHandler['options'].saltRounds).toBe(10);
         expect(sessionHandler['options'].jwtSecret).toBe('Lemmiwinks');
         expect(typeof sessionHandler['options'].verify).toBe('function');
+        expect(sessionHandler['options'].verify('hi', 'mom')).toBe('it works!');
     });
 
     it('should provide a token once a user is verified', () => {
 
-        const secret = process.env.SECRET_KEY || sessionHandler['options'].jwtSecret;
+        sessionHandler.setOptions({
+            verify: () => 'its working',
+            jwtSecret: 'Lemmiwinks'
+        });
+        
+        const secret = sessionHandler['options'].jwtSecret;
+        console.log({secret})
 
         const username = 'elizabeth';
         const password = 'password';
 
         const user = { username, role: 'user' };
 
-        // const verifyUserSpy = jest.spyOn(sessionHandler, 'verifyUser');
-
-        const token = jwt.sign({ username: user.username, role: user.role }, secret);
-        
-
         const result = sessionHandler.verifyUser(username, password);
 
-        expect(result).toBe(token);
+        const checkToken = jwt.verify(result!, secret)
+
+        expect(checkToken).not.toBe(undefined);
+    });
+
+    it('should return false if the credentials are invalid, as determined by the verify funciton', () => {
+        sessionHandler.setOptions({
+            verify: () => null,
+            jwtSecret: 'Lemmiwinks'
+        });
+        
+        const secret = sessionHandler['options'].jwtSecret;
+        console.log({secret})
+
+        const username = 'elizabeth';
+        const password = 'password';
+
+        const user = { username, role: 'user' };
+
+        const result = sessionHandler.verifyUser('bad', 'eeeevil');
+
+        expect(result).toBe(undefined);
+    });
+});
+
+describe("verifyToken function", () => {
+    let sessionHandler : SessionHandler
+    beforeEach(()=> {
+        sessionHandler = new SessionHandler
+        sessionHandler.setOptions({
+            jwtSecret: 'superSecret',
+            verify : (username, password) => {
+                if (username === 'Elizabeth' && password ==='elizabethPassword'){
+                    return 'Elizabeth'
+                }
+                return null;
+            }
+        })
     })
+
+    it('should return false when provided an invalid token', ()=> {
+        const wrongSecret = 'bwahahahahmichaeljackson';
+        const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsaXphYmV0aCIsImlhdCI6MTcyMTQ5NTI0Nn0.xU5s4yqpryre2hZosWAb3SnSvBinQj3kzIMp7MGrYIk'
+        const badVerify = sessionHandler.verifyToken(invalidToken);
+        expect(badVerify).toBe(false);
+    })
+
+    
 })
