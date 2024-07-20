@@ -42,6 +42,20 @@ describe("Session handler functions", () => {
         expect(sessionHandler['options'].verify('hi', 'mom')).toBe('it works!');
     });
 
+    xit('should return an error if options does not match typing', () => {
+        const dummyOptions = {
+            verify: () => true,
+            expiresIn: '2h',
+            rateLimit: 5,
+            jwtSecret: 3
+        };
+        
+
+
+
+
+    })
+
 });
 
 describe('verifyUser function', () => {
@@ -80,7 +94,7 @@ describe('verifyUser function', () => {
         });
         
         const secret = sessionHandler['options'].jwtSecret;
-        console.log({secret})
+        // console.log({secret})
     
         const user = { username, role: 'user' };
     
@@ -110,6 +124,20 @@ describe("verifyToken function", () => {
         const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsaXphYmV0aCIsImlhdCI6MTcyMTQ5NTI0Nn0.xU5s4yqpryre2hZosWAb3SnSvBinQj3kzIMp7MGrYIk'
         const badVerify = sessionHandler.verifyToken(invalidToken);
         expect(badVerify).toBe(false);
+    });
+
+    it('should return decoded object when provided correct token', () => {
+        const secret = sessionHandler['options'].jwtSecret;
+        const justSomeString = 'oajofdalfjedlafjd'
+        const validToken = sessionHandler.verifyUser('Elizabeth', 'elizabethPassword');
+        
+        const validVerify = sessionHandler.verifyToken(`${validToken}`);
+        console.log('valid verify', validVerify)
+
+
+        expect(validVerify).toHaveProperty('id');
+        //finish this test later lol
+
     })
 
     
