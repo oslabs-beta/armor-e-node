@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "node -e \"require('assert').strict.ok(true, 'Test passed')\"",
+    "test": "jest",
     "build": "tsc"
   },
   "repository": {
