@@ -29,6 +29,26 @@ class SessionHandler {
   }
 
   public setOptions(options: Options) {
+    // first, check to make sure there are no invalid or undefined options
+    if (options.rateLimitTime === undefined || options.rateLimitTime < 0 || !Number.isInteger(options.rateLimitTime)) {
+      throw new Error('Invalid rate limit time');
+    }
+    if (options.rateLimit === undefined || options.rateLimit < 0 || !Number.isInteger(options.rateLimit)) {
+      throw new Error('Invalid rate limit');
+    }
+    if (options.expiresIn === undefined) {
+      throw new Error('Invalid expiration time');
+    }
+    if (options.verify === undefined) {
+      throw new Error('Invalid verify function');
+    }
+    if (options.jwtSecret === undefined) {
+      throw new Error('Invalid JWT secret');
+    }
+    if (options.saltRounds === undefined || options.saltRounds < 0 || !Number.isInteger(options.saltRounds)) {
+      throw new Error('Invalid salt rounds');
+    }
+    // if all options are valid, assign them to the options object
     Object.assign(this.options, options);
   }
 
@@ -69,7 +89,7 @@ class SessionHandler {
 
   private rateLimitCheck(ip: string) {
     const [date, count] = this.history.get(ip) || [new Date(), 0];
-    if (new Date().getTime() - date.getTime() > this.options.rateLimitTime * 1000) {
+    if (new Date().getTime() - date.getTime() > this.options.rateLimitTime! * 1000) {
       this.history.set(ip, [new Date(), 1]);
     } else {
       this.history.set(ip, [date, count + 1]);
@@ -79,7 +99,7 @@ class SessionHandler {
   public rateLimitMiddleware(req: Request, res: Response, next: NextFunction) {
     const ip = req.ip || 'NO_IP';
     this.rateLimitCheck(ip);
-    if (this.history.get(ip)![1] > this.options.rateLimit) {
+    if (this.history.get(ip)![1] > this.options.rateLimit!) {
       return res.status(429).send('Too many requests');
     }
     return next();
