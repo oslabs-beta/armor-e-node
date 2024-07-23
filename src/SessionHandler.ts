@@ -7,14 +7,15 @@ import jwt from 'jsonwebtoken';
 class SessionHandler { 
   private options: Options;
 
+  private history: Map<string, [Date, number]> = new Map(); // history of requests from an IP address
+
   constructor() {
     this.options = {
       // maybe include a customizable user object here
       // also a customizable user database, such as a MongoDB connection
       // otherwise, the user will have to implement their own database connection,
       // look into express-rate-limit
-      verify: () => {
-        
+      verify: () => {        
         return null;
       },
       expiresIn: '1h',
@@ -55,9 +56,35 @@ class SessionHandler {
       return false;
     }
   }
+
+  public verifyTokenMiddleware(req: Request, res: Response, next: NextFunction) {
+    const token = req.headers.authorization;
+    if (token) {
+      if (this.verifyToken(token)) {
+        return next();
+      }
+    }
+    return res.status(401).send('Unauthorized');
+  }
+
+  private rateLimitCheck(ip: string) {
+    const [date, count] = this.history.get(ip) || [new Date(), 0];
+    if (new Date().getTime() - date.getTime() > this.options.rateLimitTime * 1000) {
+      this.history.set(ip, [new Date(), 1]);
+    } else {
+      this.history.set(ip, [date, count + 1]);
+    }
+  }
+
+  public rateLimitMiddleware(req: Request, res: Response, next: NextFunction) {
+    const ip = req.ip || 'NO_IP';
+    this.rateLimitCheck(ip);
+    if (this.history.get(ip)![1] > this.options.rateLimit) {
+      return res.status(429).send('Too many requests');
+    }
+    return next();
+  }
 }
-
-
 
 
 
