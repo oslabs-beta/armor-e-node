@@ -1,1 +1,0 @@
-import Strategy from '../SessionHandler';

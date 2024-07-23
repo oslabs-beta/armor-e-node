@@ -1,4 +1,5 @@
 //main entry point for the application
+import { NextFunction, Request, Response } from 'express';
 import Options from './options';
 import jwt from 'jsonwebtoken';
 
@@ -34,6 +35,17 @@ class SessionHandler {
     if (this.options.verify(id, password) !== null) {
       return jwt.sign({ id }, this.options.jwtSecret, { expiresIn: this.options.expiresIn || '1h' });
     }
+  }
+
+  public verifyUserMiddleware(req: Request, res: Response, next: NextFunction) {
+    const username = req.body.username;
+    const password = req.body.password;
+    if (this.options.verify(username, password) !== null) {
+      return next();
+    } else {
+      throw new Error('Invalid username or password');
+    }
+
   }
 
   public verifyToken(token: string) {
