@@ -4,6 +4,14 @@ import Options from './options';
 import jwt from 'jsonwebtoken';
 
 
+
+// { // sample request body for a login request
+//   username: string,
+//   password: string,
+//   email: string,
+//   phoneNumber: string,
+//   }
+
 class SessionHandler { 
   private options: Options;
 
