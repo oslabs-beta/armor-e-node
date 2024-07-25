@@ -31,13 +31,25 @@ class SessionHandler {
   public setOptions(options: Options) {
     // first, check to make sure there are no invalid or undefined options
     if (options.rateLimitTime === undefined || options.rateLimitTime < 0 || !Number.isInteger(options.rateLimitTime)) {
-      throw new Error('Invalid rate limit time');
+      if (options.rateLimitTime === undefined) {
+        delete options.rateLimitTime;
+      } else {
+        throw new Error('Invalid rate limit time');
+      }
     }
     if (options.rateLimit === undefined || options.rateLimit < 0 || !Number.isInteger(options.rateLimit)) {
-      throw new Error('Invalid rate limit');
+      if (options.rateLimit === undefined) {
+        delete options.rateLimit;
+      } else {
+        throw new Error('Invalid rate limit');
+      }
     }
     if (options.expiresIn === undefined) {
-      throw new Error('Invalid expiration time');
+      if (options.expiresIn === undefined) {
+        delete options.expiresIn;
+      } else {
+        throw new Error('Invalid expiration time');
+      }
     }
     if (options.verify === undefined) {
       throw new Error('Invalid verify function');
@@ -46,7 +58,11 @@ class SessionHandler {
       throw new Error('Invalid JWT secret');
     }
     if (options.saltRounds === undefined || options.saltRounds < 0 || !Number.isInteger(options.saltRounds)) {
-      throw new Error('Invalid salt rounds');
+      if (options.saltRounds === undefined) {
+        delete options.saltRounds;
+      } else {
+        throw new Error('Invalid salt rounds');
+      }
     }
     // if all options are valid, assign them to the options object
     Object.assign(this.options, options);
@@ -59,12 +75,14 @@ class SessionHandler {
   }
 
   public verifyUserMiddleware(req: Request, res: Response, next: NextFunction) {
-    const username = req.body.username;
+    const username = req.body.id;
     const password = req.body.password;
-    if (this.options.verify(username, password) !== null) {
+    const token = this.options.verify(username, password);
+    if (token !== null) {
+      res.locals.token = token;
       return next();
     } else {
-      throw new Error('Invalid username or password');
+      next(new Error('Invalid username or password'));
     }
 
   }

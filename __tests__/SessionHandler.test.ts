@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import SessionHandler from '../src/SessionHandler';
 import jwt from 'jsonwebtoken';
 import Options from '../src/options';
+import { Request, Response } from 'express';
 
 describe("Session handler functions", () => {
     
@@ -140,5 +141,45 @@ describe("verifyToken function", () => {
 
     })
 
+    
+})
+
+describe('verifyUserMiddleware function', () => {
+    let sessionHandler : SessionHandler;
+
+    const id = 'Max';
+    const password = 'veryverysecretpassword';
+    const req : Partial<Request> = { body: { id, password } }
+    const res : Partial<Response> = { locals: {}}
+    const next = jest.fn();
+
+    beforeEach(() => {
+        sessionHandler = new SessionHandler;
+        sessionHandler.setOptions({
+            verify: (id, password) => {
+                console.log('id', id)
+                console.log('password', password)
+                if (id === 'Max' && password === 'veryverysecretpassword'){
+                    return 'Max';
+                }
+                return null;
+            },
+            jwtSecret: 'superSecret'
+        })
+    })
+
+    it('should attach a token to the request object if the user is verified', () => {
+        sessionHandler.verifyUserMiddleware(req as Request, res as Response, next);
+        expect(res.locals).toHaveProperty('token');
+    })
+    it('should call next with an error if the user is not verified', () => {
+        req.body.id = 'someInvalidNonMaxPerson';
+        sessionHandler.verifyUserMiddleware(req as Request, res as Response, next);
+        expect(next).toHaveBeenCalled();
+    })
+})
+
+describe('rateLimit function', () => {
+    let sessionHandler : SessionHandler;
     
 })
