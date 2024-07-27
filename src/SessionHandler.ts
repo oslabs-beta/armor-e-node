@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from 'express';
 import Options from './options';
 import jwt from 'jsonwebtoken';
+import express from 'express';
 
 
 
@@ -76,13 +77,14 @@ class SessionHandler {
     Object.assign(this.options, options);
   }
 
-  public verifyUser(id: string, password: string) {
+  private verifyUser(id: string, password: string) {
     if (this.options.verify(id, password) !== null) {
       return jwt.sign({ id }, this.options.jwtSecret, { expiresIn: this.options.expiresIn || '1h' });
     }
   }
 
-  public verifyUserMiddleware(req: Request, res: Response, next: NextFunction) {
+  private verifyUserMiddleware(req: Request, res: Response, next: NextFunction) {
+    
     const username = req.body.id;
     const password = req.body.password;
     const token = this.options.verify(username, password);
@@ -95,7 +97,21 @@ class SessionHandler {
 
   }
 
-  public verifyToken(token: string) {
+  private bodyParseCheck(req: Request, res: Response, next: NextFunction) {
+    if (req.body && Object.keys(req.body).length > 0) {
+      return next();
+    }
+    express.json()(req, res, next);
+  }
+
+  public getVerifyUserMiddleware() {
+    const router = express.Router();
+    router.use(this.bodyParseCheck.bind(this));
+    router.use(this.verifyUserMiddleware.bind(this));
+    return router;
+  }
+
+  private verifyToken(token: string) {
     try {
       return jwt.verify(token, this.options.jwtSecret);
     } catch (err) {
@@ -103,7 +119,7 @@ class SessionHandler {
     }
   }
 
-  public verifyTokenMiddleware(req: Request, res: Response, next: NextFunction) {
+  private verifyTokenMiddleware(req: Request, res: Response, next: NextFunction) {
     const token = req.headers.authorization;
     if (token) {
       if (this.verifyToken(token)) {
@@ -111,6 +127,12 @@ class SessionHandler {
       }
     }
     return res.status(401).send('Unauthorized');
+  }
+
+  public getVerifyTokenMiddleware() {
+    const router = express.Router();
+    router.use(this.verifyTokenMiddleware.bind(this));
+    return router;
   }
 
   private rateLimitCheck(ip: string) {
@@ -122,13 +144,19 @@ class SessionHandler {
     }
   }
 
-  public rateLimitMiddleware(req: Request, res: Response, next: NextFunction) {
+  private rateLimitMiddleware(req: Request, res: Response, next: NextFunction) {
     const ip = req.ip || 'NO_IP';
     this.rateLimitCheck(ip);
     if (this.history.get(ip)![1] > this.options.rateLimit!) {
       return res.status(429).send('Too many requests');
     }
     return next();
+  }
+
+  public getRateLimitMiddleware() {
+    const router = express.Router();
+    router.use(this.rateLimitMiddleware.bind(this));
+    return router;
   }
 }
 

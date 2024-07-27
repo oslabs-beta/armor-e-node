@@ -36,6 +36,7 @@
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-plugin-import": "^2.29.1",
     "jest": "^29.7.0",
+    "supertest": "^7.0.0",
     "ts-jest": "^29.2.2",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.3",
@@ -43,6 +44,7 @@
     "undefined": "^0.1.0"
   },
   "dependencies": {
+    "@jest/globals": "^29.7.0",
     "express": "^4.19.2",
     "express-rate-limit": "^7.3.1",
     "jsonwebtoken": "^9.0.2"
