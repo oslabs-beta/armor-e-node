@@ -6,13 +6,6 @@ import express from 'express';
 
 
 
-// { // sample request body for a login request
-//   username: string,
-//   password: string,
-//   email: string,
-//   phoneNumber: string,
-//   }
-
 class SessionHandler { 
   private options: Options;
 
@@ -20,10 +13,6 @@ class SessionHandler {
 
   constructor() {
     this.options = {
-      // maybe include a customizable user object here
-      // also a customizable user database, such as a MongoDB connection
-      // otherwise, the user will have to implement their own database connection,
-      // look into express-rate-limit
       verify: () => {        
         return null;
       },

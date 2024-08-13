@@ -5,6 +5,16 @@ import { describe, expect } from '@jest/globals';
 import SessionHandler from '../src/SessionHandler';
 
 
+
+
+// { // sample request body for a login request
+//   username: string,
+//   password: string,
+//   email: string,
+//   phoneNumber: string,
+//   }
+
+
 describe('verifyUser middleware function', ()=>{
   let app: Application;
   let sessionHandler: SessionHandler;
@@ -25,8 +35,15 @@ describe('verifyUser middleware function', ()=>{
   });
 
   it('should return a token if the verify function returns a value', async () => {
-    app.post('/login', sessionHandler.getVerifyUserMiddleware());
-    // const response = await request(app);
-    //const result = await response.send()
+    request(app)
+      .post('/login')
+      .send( { id: 'whatIsAMand', password: 'aMiserablePileOfSecrets' })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .expect((res) => {
+        expect(res.body).toHaveProperty('token');
+      });
+
   });
 });
+
