@@ -76,7 +76,9 @@ class SessionHandler {
     
     const username = req.body.id;
     const password = req.body.password;
+    console.log('username, password', username, password);
     const token = this.options.verify(username, password);
+    console.log({ token });
     if (token !== null) {
       res.locals.token = token;
       return next();
@@ -90,7 +92,7 @@ class SessionHandler {
     if (req.body && Object.keys(req.body).length > 0) {
       return next();
     }
-    express.json()(req, res, next);
+    express.text()(req, res, next);
   }
 
   public getVerifyUserMiddleware() {
