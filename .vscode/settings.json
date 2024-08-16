@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
         "armore"
-    ]
+    ],
+    "files.autoSave": "afterDelay",
+    "eslint.format.enable": true
 }
