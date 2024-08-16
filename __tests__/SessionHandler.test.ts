@@ -75,7 +75,7 @@ describe('verifyUser function', () => {
     });
         
     const secret = sessionHandler.options.jwtSecret;
-    console.log({ secret });
+    //console.log({ secret });
     
     
     //const user = { username, role: 'user' };
@@ -132,7 +132,7 @@ describe('verifyToken function', () => {
     const validToken = sessionHandler.verifyUser('Elizabeth', 'elizabethPassword');
         
     const validVerify = sessionHandler.verifyToken(`${validToken}`);
-    console.log('valid verify', validVerify);
+    //console.log('valid verify', validVerify);
 
 
     expect(validVerify).toHaveProperty('id');
@@ -156,8 +156,8 @@ describe('verifyUserMiddleware function', () => {
     sessionHandler = new SessionHandler;
     sessionHandler.setOptions({
       verify: (ID:string, pwd:string) => {
-        console.log('id', id);
-        console.log('password', pwd);
+        //console.log('id', id);
+        //console.log('password', pwd);
         if ( ID === 'Max' && pwd === 'veryverysecretpassword') {
           return 'Max';
         }
