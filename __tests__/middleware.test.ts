@@ -62,7 +62,7 @@ beforeEach(()=> {
 
 describe('verifyUser middleware function', () => {
 
-  it('should return a token if the verify function returns a value', async () => {
+  test('should return a token if the verify function returns a value', done => {
     request(app)
       .post('/login')
       .send( { id: 'whatIsAMand', password: 'aMiserablePileOfSecrets' })
@@ -75,7 +75,9 @@ describe('verifyUser middleware function', () => {
       .end((err) => {
         if (err) {
           console.error('Error');
-          //throw err;
+          done(err);
+        } else {
+          done();
         }
       });
 
